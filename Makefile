@@ -10,7 +10,7 @@
 #
 
 # Executables to built using "make all"
-EXECUTABLES = testfile um
+EXECUTABLES = um
 
 #
 #  The following is a compromise. You MUST list all your .h files here.
@@ -19,7 +19,7 @@ EXECUTABLES = testfile um
 #  files it really uses.
 #
 # Add your own .h files to the right side of the assingment below.
-INCLUDES = UStack.h DynAry.h seg.h instructions.h
+INCLUDES = 
 
 # Do all C compies with gcc (at home you could try clang)
 CC = gcc
@@ -36,7 +36,7 @@ IFLAGS = -I. -I$(COMP40)/build/include -I$(HANSON)/include/cii
 
 
 # the next three lines enable you to compile and link against course software
-CFLAGS = -g -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic $(IFLAGS)
+CFLAGS = -g -std=c99 -Wall -Wextra -Werror -Wfatal-errors -pedantic -O2 $(IFLAGS)
 LIBS = $(CIILIBS) -lm    
 LFLAGS = -L$(COMP40)/build/lib
 
@@ -48,7 +48,7 @@ LDFLAGS = -g -L$(COMP40)/build/lib -L$(HANSON)/lib64
 # Libraries needed for any of the programs that will be linked
 # Both programs need cii40 (Hanson binaries) and *may* need -lm (math)
 # Only brightness requires the binary for pnmrdr.
-LDLIBS = -lbitpack -lpnmrdr -lcii40 -lm 
+LDLIBS = -lbitpack -lpnmrdr -lcii40-O2 -lm 
 
 
 # 
@@ -79,10 +79,7 @@ clean:
 #    Those .o files are linked together to build the corresponding
 #    executable.
 #
-
-testfile: testfile.o UStack.o DynAry.o seg.o instructions.o
-
-um: um.o UStack.o DynAry.o seg.o instructions.o
+um: um.o 
 
 # Other Shortcuts worth nothing
 # $@ takes the name of the build rule and inserts it into the command

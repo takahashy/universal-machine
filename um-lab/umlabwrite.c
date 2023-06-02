@@ -14,17 +14,35 @@ extern void build_verbose_halt_test(Seq_T instructions);
 extern void build_add_test(Seq_T stream);
 extern void build_output_test(Seq_T instructions);
 extern void build_load_output(Seq_T stream);
+
+extern void build_output_unit_test(Seq_T stream);
+extern void build_input_test(Seq_T stream);
+
 extern void build_cmove_unit(Seq_T stream);
 extern void build_add_unit(Seq_T stream);
 extern void build_multiply_unit(Seq_T stream);
 extern void build_divide_unit(Seq_T stream);
 extern void build_nand_unit(Seq_T stream);
 
+extern void build_segstore_unit_test(Seq_T stream);
 extern void build_segStoreLoad_test(Seq_T stream);
+extern void build_map_unit_test(Seq_T stream);
+extern void build_map_unmap_test(Seq_T stream);
+extern void build_loadp_unit_test(Seq_T stream);
+
+extern void build_ummapSeg0_test(Seq_T stream);
+extern void build_badummap_test(Seq_T stream);
+extern void build_badsegstore_test(Seq_T stream);
+extern void build_badsegload_test(Seq_T stream);
+extern void build_badsegstore_bound_test(Seq_T stream);
+extern void build_badsegload_bound_test(Seq_T stream);
+extern void build_badloadprogram_test(Seq_T stream);
+extern void build_nohalt_test(Seq_T stream);
+
 
 extern void build_eLargeMap_test(Seq_T stream);
 
-extern void build_map_unmap_test(Seq_T stream);
+
 
 /* The array `tests` contains all unit tests for the lab. */
 
@@ -35,18 +53,32 @@ static struct test_info {
         /* writes instructions into sequence */
         void (*build_test)(Seq_T stream);
 } tests[] = {
-        { "halt",         NULL, "", build_halt_test },
-        { "halt-verbose", NULL, "", build_verbose_halt_test },
-        { "add", NULL, "" , build_add_test},
-        { "print-six", NULL, "", build_output_test},
-        { "load-output", NULL, "", build_load_output},
+        { "halt-unit-test",         NULL, "", build_halt_test },
+        { "output-unit-test", NULL, "", build_output_unit_test},
+        { "input-unit-test", NULL, "", build_input_test},
+        // { "halt-verbose", NULL, "", build_verbose_halt_test },
+        // { "add", NULL, "" , build_add_test},
+        // { "print-six", NULL, "", build_output_test},
+        { "loadv-unit-test", NULL, "", build_load_output},
         { "cmove-unit-test", NULL, "", build_cmove_unit},
-        { "add-unit-test", NULL, "", build_add_test},
+        { "add-unit-test", NULL, "", build_add_unit},
         { "multiply-unit-test", NULL, "", build_multiply_unit},
         { "divide-unit-test", NULL, "", build_divide_unit},
         { "nand-unit-test", NULL, "", build_nand_unit},
-        { "seg-load-store-test", NULL, "", build_segStoreLoad_test},
-        { "map-unmap-test", NULL, "", build_map_unmap_test}
+        { "map-unit-test", NULL, "", build_map_unit_test},
+        { "unmap-unit-test", NULL, "", build_map_unmap_test},
+        { "segstore-unit-test", NULL, "", build_segstore_unit_test},
+        { "segload-unit-test", NULL, "", build_segStoreLoad_test},
+        { "loadp-unit-test", NULL, "", build_loadp_unit_test}
+        
+        // { "bad-unmap-seg0-test", NULL, "", build_ummapSeg0_test},
+        // { "bad-unmap-test", NULL, "", build_badummap_test},
+        // { "bad-segstore-test", NULL, "", build_badsegstore_test},
+        // { "bad-segload-test", NULL, "", build_badsegload_test},
+        // { "bad-segstore-bound-test", NULL, "", build_badsegstore_bound_test},
+        // { "bad-segload-bound-test", NULL, "", build_badsegload_bound_test},
+        // { "bad-loadp-test", NULL, "", build_badloadprogram_test},
+        // { "bad-nohalt-test", NULL, "", build_nohalt_test}
         //{ "extreme-mapping-test", NULL, "", build_eLargeMap_test}
 };
 
@@ -97,7 +129,7 @@ int main (int argc, char *argv[])
 
 static void write_test_files(struct test_info *test)
 {
-        FILE *binary = open_and_free_pathname(Fmt_string("%s.um", test->name));
+        FILE *binary = open_and_free_pathname(Fmt_string("../%s.um", test->name));
         Seq_T instructions = Seq_new(0);
         test->build_test(instructions);
         Um_write_sequence(binary, instructions);

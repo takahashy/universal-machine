@@ -4,7 +4,7 @@ rm theum.out ourum.out
 
 COUNTER=1
 
-for FILE in um-lab/*.um
+for FILE in *.um
 do
     echo "$COUNTER. test for $FILE:"
     um $FILE > theum.out
@@ -13,3 +13,5 @@ do
 
     COUNTER=$(($COUNTER+1))
 done
+
+    rm theum.out ourum.out

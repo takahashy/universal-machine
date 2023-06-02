@@ -113,6 +113,13 @@ void build_output_test(Seq_T stream)
         append(stream, halt());
 }
 
+void build_input_test(Seq_T stream)
+{
+        append(stream, three_register(IN, r0, r0, r0));
+        append(stream, output(r0));
+        append(stream, halt());
+}
+
 void build_load_output(Seq_T stream)
 {
         for (uint32_t i = 0; i < 256; i++) {
@@ -141,11 +148,7 @@ void build_cmove_unit(Seq_T stream)
 void build_add_unit(Seq_T stream)
 {       
         append(stream, loadval(r1, 23));
-        append(stream, loadval(r2, 6));
-        append(stream, three_register(ADD, r3, r1, r2));
-        append(stream, output(r3));
-        append(stream, loadval(r1, 45));
-        append(stream, loadval(r2, 345));
+        append(stream, loadval(r2, 74));
         append(stream, three_register(ADD, r3, r1, r2));
         append(stream, output(r3));
         append(stream, halt()); 
@@ -166,10 +169,11 @@ void build_multiply_unit(Seq_T stream)
 
 void build_nand_unit(Seq_T stream)
 {       
-        // append(stream, loadval(r1, 0x1ffffff));
-        // append(stream, loadval(r2, 0x1ffffff));
-        // append(stream, three_register(NAND, r3, r1, r2));
-        // append(stream, output(r3));
+        
+        append(stream, three_register(NAND, r0, r1, r2));
+        append(stream, three_register(NAND, r1, r0, r0));
+        append(stream, loadval(r1, 1023));
+        append(stream, three_register(NAND, r2, r1, r0));
         
         append(stream, halt());
 }
@@ -208,7 +212,6 @@ void build_segStoreLoad_test(Seq_T stream)
 {       
 
         append(stream, loadval(r2, 10));
-
         append(stream, three_register(ACTIVATE, r0, r1, r2));
 
         append(stream, loadval(r1, 1));
@@ -227,6 +230,17 @@ void build_segStoreLoad_test(Seq_T stream)
 
         append(stream, halt()); 
 }
+
+void build_map_unit_test(Seq_T stream)
+{       
+        append(stream, loadval(r7, 10));
+        append(stream, three_register(ACTIVATE, r0, r1, r7));
+        append(stream, output(r1));
+        append(stream, three_register(ACTIVATE, r0, r2, r7));
+        append(stream, output(r2));
+        append(stream, halt()); 
+}
+
 
 void build_map_unmap_test(Seq_T stream)
 {       
@@ -247,24 +261,175 @@ void build_map_unmap_test(Seq_T stream)
         append(stream, halt()); 
 }
 
-// void build_map_unmap_test(Seq_T stream)
-// {       
+void build_loadp_unit_test(Seq_T stream)
+{       
 
-//         append(stream, loadval(r7, 10));
+        append(stream, loadval(r7, 10)); // 0
 
-//         append(stream, three_register(ACTIVATE, r0, r1, r7));
-//         append(stream, output(r1));
-//         append(stream, three_register(ACTIVATE, r0, r2, r7));
-//         append(stream, output(r2));
+        append(stream, three_register(ACTIVATE, r0, r6, r7)); // 1
+        // r6 = 1
 
-//         append(stream, three_register(INACTIVATE, r0, r0, r1));
+        append(stream, loadval(r7, 9));
+        append(stream, three_register(LOADP, r0, r0, r7));
 
-//         append(stream, three_register(ACTIVATE, r0, r2, r7));
-//         append(stream, output(r2));
+        append(stream, loadval(r1, 'Y')); //4
+        append(stream, output(r1));
+        append(stream, loadval(r1, '\n'));
+        append(stream, output(r1));
+        append(stream, halt()); 
+
+        append(stream, loadval(r4, 4)); //9
+
+        append(stream, three_register(SLOAD, r2, r5, r4));
+        append(stream, three_register(SSTORE, r6, r3, r2));
+        
+        append(stream, three_register(ADD, r3, r6, r3));
+        append(stream, three_register(ADD, r4, r6, r4));
+        append(stream, three_register(SLOAD, r2, r5, r4));
+        append(stream, three_register(SSTORE, r6, r3, r2));
+        
+        append(stream, three_register(ADD, r3, r6, r3));
+        append(stream, three_register(ADD, r4, r6, r4));
+        append(stream, three_register(SLOAD, r2, r5, r4));
+        append(stream, three_register(SSTORE, r6, r3, r2));
+        
+        append(stream, three_register(ADD, r3, r6, r3));
+        append(stream, three_register(ADD, r4, r6, r4));
+        append(stream, three_register(SLOAD, r2, r5, r4));
+        append(stream, three_register(SSTORE, r6, r3, r2));
+        
+        append(stream, three_register(ADD, r3, r6, r3));
+        append(stream, three_register(ADD, r4, r6, r4));
+        append(stream, three_register(SLOAD, r2, r5, r4));
+        append(stream, three_register(SSTORE, r6, r3, r2));
+        
+        append(stream, three_register(LOADP, r0, r6, r0));
+
+        append(stream, halt()); 
+}
+
+void build_badummap_test(Seq_T stream)
+{       
+        append(stream, loadval(r1, 10));
+        append(stream, three_register(INACTIVATE, r0, r0, r1));
+        append(stream, halt()); 
+}
+
+void build_ummapSeg0_test(Seq_T stream)
+{       
+        append(stream, loadval(r1, 0));
+        append(stream, three_register(INACTIVATE, r0, r0, r1));
+        append(stream, loadval(r1, 'B'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, 'a'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, 'd'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, '!'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, '\n'));
+        append(stream, output(r1));
+        append(stream, halt()); 
+}
+
+void build_badsegstore_test(Seq_T stream)
+{       
+        append(stream, loadval(r1, 1));
+        append(stream, loadval(r2, 5));
+        append(stream, loadval(r3, 6));
+        append(stream, three_register(SSTORE, r1, r2, r3));
+        append(stream, output(r3));
+        append(stream, halt()); 
+}
+
+void build_badsegload_test(Seq_T stream)
+{       
+        append(stream, loadval(r1, 1));
+        append(stream, loadval(r2, 5));
+
+        append(stream, three_register(SLOAD, r3, r1, r2));
+        append(stream, output(r3));
+        append(stream, halt()); 
+}
+
+void build_badsegstore_bound_test(Seq_T stream)
+{       
+        append(stream, loadval(r2, 10));
+        append(stream, three_register(ACTIVATE, r0, r1, r2));
+        
+        append(stream, loadval(r1, 1));
+        append(stream, loadval(r2, 15));
+        append(stream, loadval(r3, 6));
+        append(stream, three_register(SSTORE, r1, r2, r3));
+        append(stream, output(r3));
+        append(stream, halt()); 
+}
+
+void build_badsegload_bound_test(Seq_T stream)
+{       
+
+        append(stream, loadval(r2, 10));
+        append(stream, three_register(ACTIVATE, r0, r1, r2));
+
+        append(stream, loadval(r1, 1));
+        append(stream, loadval(r2, 15));
+
+        append(stream, three_register(SLOAD, r3, r1, r2));
+        append(stream, output(r3));
+        append(stream, halt()); 
+}
+
+void build_badloadprogram_test(Seq_T stream)
+{       
+
+        append(stream, loadval(r2, 10));
+        append(stream, three_register(ACTIVATE, r0, r1, r2));
+
+        append(stream, three_register(INACTIVATE, r0, r0, r1));
+
+        append(stream, three_register(LOADP, r0, r1, r5));
 
 
-//         append(stream, halt()); 
-// }
+        append(stream, loadval(r3, 'B'));
+        append(stream, three_register(SLOAD, r3, r1, r2));
+        append(stream, output(r3));
+        append(stream, halt()); 
+}
+
+
+void build_nohalt_test(Seq_T stream)
+{       
+
+        append(stream, loadval(r1, 'B'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, 'a'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, 'd'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, '!'));
+        append(stream, output(r1));
+        append(stream, loadval(r1, '\n'));
+        append(stream, output(r1));
+
+}
+
+void build_output_unit_test(Seq_T stream)
+{
+        append(stream, output(r1));
+        append(stream, halt()); 
+}
+
+void build_segstore_unit_test(Seq_T stream)
+{
+        append(stream, loadval(r2, 10));
+        append(stream, three_register(ACTIVATE, r0, r1, r2));
+
+        append(stream, loadval(r1, 1));
+        append(stream, loadval(r2, 5));
+        append(stream, loadval(r3, 6));
+        append(stream, three_register(SSTORE, r1, r2, r3));
+        append(stream, halt()); 
+}
 
 // void build_x(Seq_T stream)
 // {

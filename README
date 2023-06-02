@@ -1,0 +1,158 @@
+COMP40 Homework 6: um
+
+Name: Etha Hua (thua03) Yuma Takahashi (ytakah01)
+Acknowledgements: Thanks to Gustavo for helping out during OH.
+
+Total time: 
+    - analyzing the assignment: 2.00 hours
+    - preparing the design    : 4.50 hours
+    - solving the problem     : 10.50 hours
+
+-------------------------------------------------------------------------------
+um:
+    Build: make um
+    Run: ./um [FILE.um]
+    
+-------------------------------------------------------------------------------
+Architecture:
+    
+    um.c:
+
+    um.c handles the commandline information, initializing and freeing the UM 
+    memory, holds the machine cycle and keeps track of the machine-state 
+    related information (registers, program counter and haltState)
+
+    seg.c / seg.h:
+
+    seg module handles the memory of the UM as well as memory-related 
+    instructions. 
+
+    instructions.c / instructions.h:
+
+    instructions module handles the function definitions for simpler 
+    um instructions including: cmove, add, multiply, divide, nand, ouput and 
+    input.
+    
+    
+    HELPER DATA STRUCTURES:
+
+    1.DynAry: a dynamic array of pointers where the user can initialize, free, 
+              set an element, push an element and check the size of the array.
+              It is implemented to hold the pointers in an unboxed way. 
+
+    2.UStack: an unboxed stack of type uint32_t's where the user can 
+              initialize free, push and pop elements, and check whether the 
+              stack is empty.
+    
+
+    
+-------------------------------------------------------------------------------
+Testing:
+
+halt-unit-test.um 
+
+    Test the halt instruction. Simply halts.
+
+output-unit-test.um 
+
+    Test the output instruction. Output a random register (which by default 
+    holds 0) and output it as a character. 
+
+loadv-unit-test.um 
+
+    Test the loadv instruction. Loads values from 0 to 255 to a register and 
+    outputs that register's value. 
+
+input-unit-test.um 
+
+    Test the input instruction. Use the input instruction and store the value 
+    to a specific register, and then outputs the content of the same register.
+
+cmove-unit-test.um 
+
+    Test the cmove instruction. Load two different values to r1 and r2. First 
+    load 1 to r3 and call cmove on the condition of r3=0. Output r1, it should 
+    not be assigned to the value of r2. Then change the value of r3 to 0, and 
+    do the cmove instruction again. Output r1, now r1 should be equal to r2.
+
+add-unit-test.um 
+
+    Test the add instruction. Load two values into r1 and r2. Use add 
+    instruction to store the sum of r1 and r2 in r3. Output r3.
+
+multiply-unit-test.um 
+
+    Test the multiply instruction. Load two values into r1 and r2. Use multiply
+    instruction to store the product of r1 and r2 in r3. Output r3.
+
+divide-unit-test.um 
+
+    Test the divide instruction. Load two values into r1 and r2. Use divide
+    instruction to store the r1 / r2 in r3. Output r3. The steps are done 1) 
+    when r1 mod r2 is 0, and 2) when r1 mod r2 is not 0.
+
+
+nand-unit-test.um 
+
+    Test the nand instruction. Use 0 NAND 0 and store the result 1 in r0. then 
+    r0 NAND r0 store the result in r1. Then load r1 with a non-all-zero 
+    configuration and call r1 NAND r0 and store the result in r2. There is no
+    output in this unit test since the product of NAND occupies all 32 bits of 
+    the register.
+
+
+map-unit-test.um 
+
+    Test the map segment instruction. Load 10 to r7. Map a new segment of size 
+    r7 and store the index in r1. Output r1. Map a new segment of size r7 and 
+    store the index in r2. Output r2. r1 should be 1 and r2 should be 2. 
+
+unmap-unit-test.um
+
+    Test the map segment instruction. Load 10 to r7. Map a new segment of size 
+    r7 and store the index in r1. Output r1. Map a new segment of size r7 and 
+    store the index in r2. Output r2. Then Unmap the segment with index of r1.
+    Map another segment of size r7 and store the index of the new segment in 
+    r2. Output r2. The last output should be 1, as our map instruction uses the
+    unmapped indices in priority.
+
+
+segstore-unit-test.um 
+
+    Test the segment store instruction. Load 10 into r2. Map a new segment 
+    of size r2, store the index in r1. Load 1 into r1. Load 5 into r2. Load 6
+    into r3. Call segment store as to store r3 in m[r1][r2].
+
+
+segload-unit-test.um 
+
+    Test the segment store instruction. Load 10 into r2. Map a new segment 
+    of size r2, store the index in r1. Load 1 into r1. Load 5 into r2. Load 6
+    into r3. Call segment store as to store r3 in m[r1][r2].
+    Call segment load to load r5 the value in m[r1][r2]. Output r5. r5 should 
+    be 6. Load value 6 into r2. Call segment load to load r6 the value in 
+    m[r1][r2]. Output r6. r6 should be 0 since all words in a new segment 
+    are initialized to 0.
+
+loadp-unit-test.um 
+
+    Test the load program instruction. The general structure of this um program
+    is: 
+
+    0-1: Map a new segment of size 10
+    2-3: Load segment m[0] and set the program counter to 9
+    4-8: A mini program within the program that outputs "Y", "\n" and halts 
+    9-27: Copy the miniprogram into seg1
+    28: Load segment m[1] and set the program counter to 0
+
+
+
+
+    
+-------------------------------------------------------------------------------
+Implementation Result:
+    We believe we have succuessfully implemented all functionalities according 
+    to the spec. An additional thing to mention is that we added another DynAry
+    in the UM_Memory struct, just to align with the memorySeg array and store
+    the size of each segment in the memory.
+    
