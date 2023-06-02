@@ -1,13 +1,6 @@
-COMP40 Homework 6: um
+um
 
-Name: Etha Hua (thua03) Yuma Takahashi (ytakah01)
-Acknowledgements: Thanks to Gustavo for helping out during OH.
-
-Total time: 
-    - analyzing the assignment: 2.00 hours
-    - preparing the design    : 4.50 hours
-    - solving the problem     : 10.50 hours
-
+Name: Yuma Takahashi
 -------------------------------------------------------------------------------
 um:
     Build: make um
@@ -144,15 +137,5 @@ loadp-unit-test.um
     4-8: A mini program within the program that outputs "Y", "\n" and halts 
     9-27: Copy the miniprogram into seg1
     28: Load segment m[1] and set the program counter to 0
-
-
-
-
     
 -------------------------------------------------------------------------------
-Implementation Result:
-    We believe we have succuessfully implemented all functionalities according 
-    to the spec. An additional thing to mention is that we added another DynAry
-    in the UM_Memory struct, just to align with the memorySeg array and store
-    the size of each segment in the memory.
-    
